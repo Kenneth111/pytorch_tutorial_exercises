@@ -35,19 +35,22 @@ def char2seq(word, char2ix):
     char_seq = [char2ix[c.lower()] for c in word]
     return torch.tensor(char_seq, dtype=torch.long)
 
-# the new model 
 class LSTMTagger(nn.Module):
     def __init__(self, embedding_dim, hidden_word_dim, hidden_char_dim, vocab_size, tagset_size):
         super(LSTMTagger, self).__init__()
+        # now we need two hidden state dimensions, because there're two lstm layers.
         self.hidden_word_dim = hidden_word_dim
         self.hidden_char_dim = hidden_char_dim
+        # word and character embeddings
         self.word_embeddings = nn.Embedding(vocab_size, embedding_dim)
         self.char_embeddings = nn.Embedding(26, embedding_dim)
+        # lstm layers for processing character embeddings and the combination of 
+        # character level representations and word embeddings
         self.char_lstm = nn.LSTM(embedding_dim, hidden_char_dim)
-        self.lstm = nn.LSTM(embedding_dim + hidden_char_dim, hidden_word_dim)
-
+        self.word_lstm = nn.LSTM(embedding_dim + hidden_char_dim, hidden_word_dim)
         # The linear layer that maps from hidden state space to tag space
         self.hidden2tag = nn.Linear(hidden_word_dim, tagset_size)
+        # initialize hidden states
         self.hidden_word = self.init_hidden(self.hidden_word_dim)
         self.hidden_char = self.init_hidden(self.hidden_char_dim)
 
@@ -56,21 +59,26 @@ class LSTMTagger(nn.Module):
                 torch.zeros(1, 1, dim))
 
     def forward(self, sentence, words):
+        # generate character representations
         char_list = []
         for word in words:
+            # clear out the hidden state
             self.hidden_char = self.init_hidden(self.hidden_char_dim)
             char_embeds = self.char_embeddings(word)
             _, self.hidden_char = self.char_lstm(char_embeds.view(len(word), 1, -1))
             char_list.append(self.hidden_char[0])
         char_list = torch.stack(char_list).view(len(words), -1)
+
         word_embeds = self.word_embeddings(sentence)
+        # merge character representations with word embeddings
         cat_embeds = torch.cat([word_embeds, char_list], dim=1)
-        lstm_out, self.hidden_word = self.lstm(
+        lstm_out, self.hidden_word = self.word_lstm(
             cat_embeds.view(len(sentence), 1, -1), self.hidden_word)
         tag_space = self.hidden2tag(lstm_out.view(len(sentence), -1))
         tag_scores = F.log_softmax(tag_space, dim=1)
         return tag_scores
 
+# training
 tagger_model = LSTMTagger(EMBEDDING_DIM, HIDDEN_DIM, 3, len(word_to_ix), len(tag_to_ix))
 loss_function = nn.NLLLoss()
 optimizer = optim.SGD(tagger_model.parameters(), lr=0.1)
@@ -86,6 +94,8 @@ for epoch in range(200):
         loss.backward()
         optimizer.step()
 
+# testing
+# create a dict, {0: 'DET', 1: 'NN', 2: 'V'}
 ix2tag = {tag_to_ix[tag]: tag for tag in tag_to_ix.keys()}
 with torch.no_grad():
     for i in range(2):
@@ -94,6 +104,6 @@ with torch.no_grad():
         inputs = prepare_sequence(sentence, word_to_ix)
         char_seq = [char2seq(word, char2ix) for word in sentence]
         tag_scores = tagger_model(inputs, char_seq)
-
+        # find the index of the max value in each row
         tags = torch.argmax(tag_scores, dim=1).numpy()
         print([ix2tag[idx] for idx in tags])
