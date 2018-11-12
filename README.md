@@ -20,3 +20,9 @@ This program demonstrates how to train a seq2seq model without attention mechani
 [TRANSLATION WITH A SEQUENCE TO SEQUENCE NETWORK AND ATTENTION](https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html)
 
 The original program shown in the above link assumes the batch size is one. Apparently, this is not a "real" batch training. The seq2seq_translation_batch_training.py & seq2seq_translation_batch_training.ipynb show how to use batch training.
+
+## finetuning_torchvision_models_resnet50.ipynb
+
+[FINETUNING TORCHVISION MODELS](https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html)
+
+At the end of this tutorial, the author asked readers to run the code with a harder dataset. I run Resnet with [the plant seeding classification dataset](https://www.kaggle.com/c/plant-seedlings-classification). In my code, I show how to add multiple layers to the top of a deep neural network model and how to use pretrained models in a Kaggle kernel.
