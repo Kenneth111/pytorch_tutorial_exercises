@@ -26,3 +26,7 @@ The original program shown in the above link assumes the batch size is one. Appa
 [FINETUNING TORCHVISION MODELS](https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html)
 
 At the end of this tutorial, the author asked readers to run the code with a harder dataset. I run Resnet with [the plant seeding classification dataset](https://www.kaggle.com/c/plant-seedlings-classification). In my code, I show how to add multiple layers to the top of a deep neural network model and how to use pretrained models in a Kaggle kernel.
+
+## ImageFolderSplitter.py
+
+Two classes, ImageFolderSplitter and DatasetFromFilename, are provided in this file. They work like torchvision.datasets.ImageFolder, but they can split a whole dataset into a training set and a validation set.
