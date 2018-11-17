@@ -109,3 +109,4 @@ venv.bak/
 *.pkl
 *.zip
 for_test
+.vscode

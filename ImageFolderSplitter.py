@@ -20,6 +20,7 @@ class ImageFolderSplitter:
         self.train_size = train_size
         self.class2num = {}
         self.num2class = {}
+        self.class_nums = {}
         self.data_x_path = []
         self.data_y_label = []
         self.x_train = []
@@ -38,9 +39,11 @@ class ImageFolderSplitter:
                         category = key
                         break
                 label = self.class2num[category]
+                self.class_nums[label] = 0
                 for file1 in files:
                     self.data_x_path.append(os.path.join(root, file1))
                     self.data_y_label.append(label)
+                    self.class_nums[label] += 1
             else:
                 raise RuntimeError("please check the folder structure!")
         self.x_train, self.x_valid, self.y_train, self.y_valid = train_test_split(self.data_x_path, self.data_y_label, shuffle = True, train_size = self.train_size)
@@ -71,13 +74,14 @@ class DatasetFromFilename(Dataset):
         img = img.convert("RGB")
         return self.transforms(img), torch.tensor([[self.y[idx]]])
 
-splitter = ImageFolderSplitter("for_test")
-transforms = Compose([Resize((51, 51)), ToTensor()])
-x_train, y_train = splitter.getTrainingDataset()
-training_dataset = DatasetFromFilename(x_train, y_train, transforms=transforms)
-training_dataloader = DataLoader(training_dataset, batch_size=2, shuffle=True)
-x_valid, y_valid = splitter.getValidationDataset()
-validation_dataset = DatasetFromFilename(x_valid, y_valid, transforms=transforms)
-validation_dataloader = DataLoader(validation_dataset, batch_size=2, shuffle=True)
-for x, y in training_dataloader:
-    print(x.shape, y.shape)
+# test code
+# splitter = ImageFolderSplitter("for_test")
+# transforms = Compose([Resize((51, 51)), ToTensor()])
+# x_train, y_train = splitter.getTrainingDataset()
+# training_dataset = DatasetFromFilename(x_train, y_train, transforms=transforms)
+# training_dataloader = DataLoader(training_dataset, batch_size=2, shuffle=True)
+# x_valid, y_valid = splitter.getValidationDataset()
+# validation_dataset = DatasetFromFilename(x_valid, y_valid, transforms=transforms)
+# validation_dataloader = DataLoader(validation_dataset, batch_size=2, shuffle=True)
+# for x, y in training_dataloader:
+#     print(x.shape, y.shape)
