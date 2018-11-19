@@ -30,3 +30,9 @@ At the end of this tutorial, the author asked readers to run the code with a har
 ## ImageFolderSplitter.py
 
 Two classes, ImageFolderSplitter and DatasetFromFilename, are provided in this file. They work like torchvision.datasets.ImageFolder, but they can split a whole dataset into a training set and a validation set.
+
+## image_transforms.py
+
+### ShiftTransform
+
+A class simulates the height_shift_range and the width_shift_range of ImageDataGenerator in Keras. This class is initialized by two fractions, x and y, representing the fraction of width and the fraction of height, respectively. In addition, this class translates an PIL Image object. It should be used with other transforms in torchvision.  

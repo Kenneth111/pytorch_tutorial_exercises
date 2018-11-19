@@ -110,3 +110,4 @@ venv.bak/
 *.zip
 for_test
 .vscode
+.idea
