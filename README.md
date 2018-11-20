@@ -35,4 +35,6 @@ Two classes, ImageFolderSplitter and DatasetFromFilename, are provided in this f
 
 ### ShiftTransform
 
-A class simulates the height_shift_range and the width_shift_range of ImageDataGenerator in Keras. This class is initialized by two fractions, x and y, representing the fraction of width and the fraction of height, respectively. In addition, this class translates an PIL Image object. It should be used with other transforms in torchvision.  
+A class simulates the height_shift_range and the width_shift_range of ImageDataGenerator in Keras. This class is initialized by two fractions, x and y, representing the fraction of width and the fraction of height, respectively. In addition, this class translates an PIL Image object. It should be used with other transforms in torchvision.
+
+There's a class named RandomAffine in PyTorch can do the similar things. However, after RandomAffine translating an image, black areas (the color is specified by the parameter fillcolor) are left on the image. Unlike RandomAffine, ShiftTransform fills the points outside the boundaries using the points on the boundaries.    
