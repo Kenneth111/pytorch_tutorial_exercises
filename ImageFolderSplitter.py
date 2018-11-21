@@ -1,7 +1,7 @@
 import os
 import torch
 from torch.utils.data import Dataset, DataLoader
-from torchvision.transforms import ToTensor, Resize, RandomHorizontalFlip, RandomVerticalFlip, RandomRotation, Compose
+from torchvision.transforms import ToTensor, Resize, Compose
 from PIL import Image
 from sklearn.model_selection import train_test_split
 
